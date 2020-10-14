@@ -1,10 +1,3 @@
-# To take input...
-#   1. input maximum possible slot in one day.
-#   2. enter starting time of every slot.
-#   3. day : for each day enter subject name and respective link to each lecture.
-
-
-
 from win10toast import ToastNotifier
 import webbrowser
 from datetime import datetime
@@ -15,6 +8,7 @@ import csv
 day = datetime.today().strftime('%A')
 toast = ToastNotifier()
 
+# To check if file is already exists.
 if os.path.isfile("timetable.csv"):
     lines = [line for line in open(r"timetable.csv")]
 else:
@@ -23,11 +17,12 @@ else:
     except Exception as e:
         print("The issue is:", e)
 
+# 
 def input_getter():
     no = int(input("Enter total slots."))
     slot_list = []
 
-    print("Enter starting time of each session. In hh:mm 24 hour or 12 hour format according to your setting.")
+    print("Enter starting time of each session. In hh:mm 24 hour or 12 hour format according to your PC time.")
     for i in range(no):
         starting_time = input(f"slot : {i+1} ")
         slot_list.append(starting_time)
@@ -40,7 +35,7 @@ def input_getter():
     thewriter.writerow(slot_list)
     thewriter.writerow(days)
 
-    print("Enter 'NA' for any time slot that not having lecture or permanent link will make execution error free.")
+    print("Enter 'NA' for any time slot that not having lecture or permanent link.")
     for day in days:
         # to get time:msg dict for each day of week.
         time_link_list = []
@@ -55,15 +50,15 @@ def input_getter():
         thewriter.writerow(time_msg_list)    # message list
         thewriter.writerow(time_link_list)   # list of link. 
 
-
+# To check if file exist but empty.
 if not lines:
     input_getter()
     
 # to read from the file if timetable is already entered.
-# code will start executing from here everytime
 final_time_msg_dict = {}
 final_time_link_dict = {}
 
+# preparing both the directories from the lines list.
 slotlist = lines[0].strip().split(',')
 daylist = lines[1].strip().split(',')
 
@@ -75,17 +70,14 @@ for i in range(2,len(lines),2):
     final_time_link_dict[daylist[idx]] = temp_linkdict
     idx += 1
 
-
-# $$$$$$$$$$$$$$$$$$$$$$$
-
-
 def openlink(day,currenttime):
     try:
         webbrowser.open(final_time_link_dict[day][currenttime])
     except Exception as e:
         pass
-        
+
 def show_notification(day,currenttime):
+    # To behave according to 'NA'
     if final_time_msg_dict[day][currenttime] != "NA" and final_time_link_dict[day][currenttime] != "NA":
         toast.show_toast( title="Notification", msg=final_time_msg_dict[day][currenttime],
                         icon_path=None, duration=10, threaded=False, callback_on_click=openlink(day,currenttime))
@@ -96,6 +88,7 @@ def show_notification(day,currenttime):
     else:
         toast.show_toast( title="Notification", msg="Free slot", icon_path=None, duration=10, threaded=False)
 
+# user interaction starts. 
 reenter = input("Do you wanto to re-enter timetable? (y/n)")
 if reenter == 'y' or reenter == 'Y':
     verify = input("Are you sure? (y/n)")
@@ -119,6 +112,6 @@ if ans == 'Y' or ans=='y':
             print("The  ",final_time_msg_dict[day][currenttime]," is started")
         
 else:
-    print("Ok do it later! No issue. :) ")
+    print("Ok")
 
 
