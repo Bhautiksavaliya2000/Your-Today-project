@@ -8,16 +8,6 @@ import csv
 day = datetime.today().strftime('%A')
 toast = ToastNotifier()
 
-# To check if file is already exists.
-if os.path.isfile("timetable.csv"):
-    lines = [line for line in open(r"timetable.csv")]
-else:
-    try:
-        lines = [line for line in open("timetable.csv", 'a+')]
-    except Exception as e:
-        print("The issue is:", e)
-
-# 
 def input_getter():
     no = int(input("Enter total slots."))
     slot_list = []
@@ -50,6 +40,17 @@ def input_getter():
         thewriter.writerow(time_msg_list)    # message list
         thewriter.writerow(time_link_list)   # list of link. 
 
+# To check if file is already exists.
+if os.path.isfile("timetable.csv"):
+    lines = [line for line in open(r"timetable.csv")]
+else:
+    try:
+        lines = [line for line in open("timetable.csv", 'a+')]
+        input_getter();
+    except Exception as e:
+        print("The issue is:", e)
+
+ 
 # To check if file exist but empty.
 if not lines:
     input_getter()
