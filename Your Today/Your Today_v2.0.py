@@ -39,14 +39,16 @@ def input_getter():
 
         thewriter.writerow(time_msg_list)    # message list
         thewriter.writerow(time_link_list)   # list of link. 
+    print("Input recorded into file successfully!\n")
 
 # To check if file is already exists.
 if os.path.isfile("timetable.csv"):
     lines = [line for line in open(r"timetable.csv")]
 else:
     try:
-        lines = [line for line in open("timetable.csv", 'a+')]
-        input_getter();
+        open("timetable.csv", 'a+')      #to create file
+        input_getter();                  #to fill file with input from user.
+        lines = [line for line in open("timetable.csv")]     # to store whole file content into list named lines.
     except Exception as e:
         print("The issue is:", e)
 
